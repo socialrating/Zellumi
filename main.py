@@ -19,6 +19,12 @@ class MyClient(discord.Client):
                     if channel.id != config.custom_voice[category_id] and len(channel.members) == 0:
                         await channel.delete()
 
+    async def on_member_join(self, member):
+        guild = member.guild
+        print(guild)
+        role_for_new_member = discord.utils.get(member.guild.roles, id=config.role_for_new_member)
+        await member.add_roles(role_for_new_member)
+
     async def on_ready(self):
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         self.check_channels.start()
@@ -41,6 +47,7 @@ class MyClient(discord.Client):
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 intents.voice_states = True
 client = MyClient(intents=intents)
 client.run(config.TOKEN)
